@@ -1,0 +1,67 @@
+// variables.scss
+
+// **Palette de Couleurs**
+
+// Fonds
+$color-background-primary: #c2e9fb; // Bleu ciel pastel
+$color-background-secondary: #e0bbe4; // Lavande douce
+$color-floating-elements: #f8f9fa; // Blanc lunaire
+
+// Typographie
+$color-text-primary: #546e7a; // Bleu marine doux
+$color-text-secondary: #e0bbe4; // Lavande douce
+$color-text-alternate: #f8f9fa; // Blanc lunaire
+$color-link: #b2dfdb; // Menthe pâle
+
+// Titres et en-têtes
+$color-heading-primary: #d1c4e9; // Violet clair
+$color-heading-secondary: #ffcdd2; // Rose pâle
+
+// Boutons
+$color-button-primary: #ffe5b4; // Or pastel
+$color-button-primary-text: $color-text-primary; // Bleu marine doux
+$color-button-secondary: $color-background-secondary; // Lavande douce
+$color-button-secondary-text: $color-text-primary; // Bleu marine doux
+$color-button-alert: $color-heading-secondary; // Rose pâle
+$color-button-alert-text: $color-text-alternate; // Blanc lunaire
+
+// États positifs/négatifs
+$color-positive: $color-link; // Menthe pâle
+$color-positive-text: $color-text-alternate; // Blanc lunaire
+$color-negative: $color-heading-secondary; // Rose pâle
+$color-negative-text: $color-text-primary; // Bleu marine doux
+
+// Icônes et erreurs
+$color-icon: #ffffff; // Couleur des icônes
+$color-error: #e74c3c; // Couleur pour les messages d'erreur
+
+// Cartes et pieds de page
+$color-card-background: #ffffff; // Couleur de fond des cartes
+$color-footer-background: #f5f5f5; // Couleur de fond du pied de page
+$color-footer-text: #666666; // Couleur du texte du pied de page
+
+// Interactions
+$color-hover: $color-button-primary; // Or pastel
+$color-focus: $color-link; // Menthe pâle
+
+// Ombres et contours
+$color-shadow: rgba(
+  84,
+  110,
+  122,
+  0.2
+); // Bleu marine doux transparent (20% d’opacité)
+$color-border: $color-text-alternate; // Blanc lunaire
+
+// Transitions et effets lumineux
+$color-transition: $color-heading-primary; // Violet clair
+$color-transition-alt: $color-button-primary; // Or pastel
+
+// **Typographie**
+$font-title: "Quicksand", sans-serif; // Police des titres
+$font-body: "Open Sans", sans-serif; // Police du corps du texte
+
+// **Autres Variables**
+$border-radius: 8px; // Rayon des bordures arrondies
+$transition-duration: 0.3s; // Durée des transitions
+$box-shadow: 0 4px 6px $color-shadow; // Ombre pour les éléments

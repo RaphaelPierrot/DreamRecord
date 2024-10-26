@@ -1,0 +1,57 @@
+// mixins.scss
+@use "sass:color";
+
+@use "variables" as *;
+// **Mixin pour les boutons**
+@mixin button($background-color, $text-color) {
+  background-color: $background-color;
+  color: $text-color;
+  border: none;
+  border-radius: $border-radius;
+  padding: 0.75em 1.5em;
+  font-family: $font-body;
+  cursor: pointer;
+  transition: background-color $transition-duration ease-in-out;
+
+  &:hover {
+    background-color: color.adjust($background-color, $lightness: -5%);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px $color-focus;
+  }
+}
+
+// **Mixin pour les titres**
+@mixin heading($size) {
+  font-family: $font-title;
+  color: $color-heading-primary;
+  font-size: $size;
+  margin-bottom: 0.5em;
+}
+
+// **Mixin pour le texte courant**
+@mixin body-text {
+  font-family: $font-body;
+  color: $color-text-primary;
+  line-height: 1.6;
+}
+
+// **Mixin pour les ombres**
+@mixin box-shadow {
+  box-shadow: $box-shadow;
+}
+
+// **Mixin pour les transitions**
+@mixin transition {
+  transition: all $transition-duration ease-in-out;
+}
+
+// **Mixin pour les effets de focus**
+@mixin focus-effect {
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px $color-focus;
+  }
+}
