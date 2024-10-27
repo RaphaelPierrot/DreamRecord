@@ -12,5 +12,5 @@ export interface User {
   totalAdvice: number;
   notifications: Notification[];
   dailyAdvice: string;
-  dreams?: Dream[]; // Ajouté pour lier les rêves
+  dreams: Dream[]; // Ajouté pour lier les rêves
 }

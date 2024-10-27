@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { Notification } from "@/interfaces";
+import type { Notification } from "@/interfaces";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 export default defineComponent({
@@ -100,7 +100,13 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+/* Exemple dans Tabs.vue ou SideBarHome.vue */
+
+@use "sass:color";
 @use "@/scss/variables.scss" as *;
+@use "@/scss/mixins.scss" as *;
+
+/* Votre code SCSS ici */
 
 .sidebar {
   position: fixed;
@@ -216,7 +222,7 @@ export default defineComponent({
     justify-content: center;
 
     &:hover {
-      background: lighten($color-card-background, 10%);
+      background: color.adjust($color-card-background, $lightness: 10%);
     }
   }
 }

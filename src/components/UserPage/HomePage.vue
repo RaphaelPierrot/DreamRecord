@@ -3,7 +3,6 @@
   <div class="home-page">
     <!-- Fond animé -->
     <HomeBackground />
-
     <!-- Sidebar -->
     <SideBarHome
       :userProfileImage="user.profileImage"
@@ -25,9 +24,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import Header from "./composant/Header.vue";
-import SideBarHome from "./composant/SideBarHome.vue";
-import HomeBackground from "./AnimatedBackground/HomeBackground.vue";
+import Header from "./Header.vue";
+import SideBarHome from "./SideBarHome.vue";
+import HomeBackground from "@/assets/AnimatedBackground/HomeBackground.vue";
 import type { User } from "@/interfaces";
 import { mockUser } from "@/data/user";
 
@@ -56,9 +55,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@use "@/scss/variables.scss" as *;
-@use "@/scss/mixins.scss" as *;
-
 .home-page {
   position: relative;
   min-height: 100vh;

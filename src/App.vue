@@ -9,6 +9,4 @@ export default {
   name: "App",
 };
 </script>
-<style lang="scss">
-@use "@/scss/global.scss" as *;
-</style>
+<style module lang="scss"></style>
