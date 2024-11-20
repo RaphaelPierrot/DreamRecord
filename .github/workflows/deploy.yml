@@ -1,0 +1,53 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main # Branche à surveiller
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # Adapter selon votre version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run type-check
+        run: npm run type-check
+
+      - name: Build frontend
+        run: npm run build --workspace frontend # Adapter selon votre structure
+
+      - name: Build backend
+        run: npm run build --workspace backend # Adapter selon votre structure
+
+      - name: Deploy to Hostinger
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: 22
+          script: |
+            cd /chemin/vers/votre/application
+            git pull origin main
+
+            # Déployer le backend
+            cd backend
+            npm install
+            pm2 restart all  # Si vous utilisez PM2
+
+            # Déployer le frontend
+            cd ../frontend
+            npm install
+            npm run build
+            cp -r dist/* /chemin/vers/public_html/  # Adapter selon votre configuration
