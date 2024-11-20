@@ -1,7 +1,7 @@
 // src/interfaces/user.ts
 
 import type { Dream } from "./dream";
-
+import type { Notification } from "./notification";
 export interface User {
   id: number;
   username: string;

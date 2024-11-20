@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import type { Notification } from "@/interfaces";
+import type { Notification } from "@/Interfaces";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 export default defineComponent({

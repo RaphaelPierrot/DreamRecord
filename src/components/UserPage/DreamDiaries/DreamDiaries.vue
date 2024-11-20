@@ -1,170 +1,176 @@
 <!-- src/components/UserPage/DreamDiaries/DreamDiaries.vue -->
 <template>
   <div class="dream-diaries">
-    <h2>Mes Journaux de Rêves</h2>
+    <div v-if="isAddingDream">
+      <AddDream @close="closeAddDream" />
+    </div>
+    <div v-else>
+      <h2>Mes Journaux de Rêves</h2>
 
-    <!-- Composant Tabs -->
-    <Tabs>
-      <!-- Onglet : Ajouter un Rêve -->
-      <Tab name="add" title="Ajouter un Rêve">
-        <AddDream @dream-added="handleDreamAdded" />
-      </Tab>
+      <!-- Composant Tabs -->
+      <Tabs>
+        <!-- Onglet : Ajouter un Rêve -->
+        <Tab name="add" title="Ajouter un Rêve">
+          <p>
+            Bienvenue dans vos journaux de rêves. Enregistrez vos rêves pour les
+            revisiter et mieux comprendre vos pensées nocturnes.
+          </p>
+          <button class="add-dream-button" @click="openAddDream">
+            Ajouter un Rêve
+          </button>
+        </Tab>
 
-      <!-- Onglet : Voir les Rêves -->
-      <Tab name="view" title="Voir les Rêves">
-        <div class="dream-list" v-if="user.dreams.length > 0">
-          <div class="dream-card" v-for="dream in user.dreams" :key="dream.id">
-            <h3>{{ dream.title }}</h3>
-            <p>{{ dream.description }}</p>
-            <small>{{ formatDate(dream.date) }}</small>
-            <div class="actions">
-              <button @click="editDream(dream.id)">Éditer</button>
-              <button @click="deleteDream(dream.id)">Supprimer</button>
-            </div>
-          </div>
-        </div>
-        <p v-else>Aucun rêve enregistré. Ajoutez votre premier rêve!</p>
-      </Tab>
-    </Tabs>
-
-    <!-- Retour au Dashboard -->
-    <div class="back-dashboard-container">
-      <router-link to="/" class="back-dashboard"
-        >← Retour au Dashboard</router-link
-      >
+        <!-- Onglet : Voir les Rêves -->
+        <Tab name="view" title="Voir les Rêves">
+          <!-- Liste des Rêves -->
+          <ViewDreams />
+        </Tab>
+      </Tabs>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import Tabs from "./Tabs.vue";
 import Tab from "./Tab.vue";
-import AddDream from "./AddDream.vue";
-import type { User } from "@/interfaces";
+import QuestionSection from "./QuestionSection.vue";
+import type { User, Dream } from "@/Interfaces";
 import { mockUser } from "@/data/user";
+import ViewDreams from "./ViewDreams.vue";
+import AddDream from "./AddDream.vue";
+import { useUIStore } from "@/store/uiStore";
 
 export default defineComponent({
   name: "DreamDiaries",
   components: {
     Tabs,
     Tab,
+    QuestionSection,
+    ViewDreams,
     AddDream,
   },
   setup() {
+    const isAddingDream = ref(false);
+    const uiStore = useUIStore();
     const user: User = mockUser;
+    const isAddDreamOpen = ref(false);
 
-    const handleDreamAdded = () => {
-      // Optionnel : Passer automatiquement à l'onglet "Voir les Rêves"
-      // Vous pouvez implémenter une logique pour changer l'onglet actif si nécessaire
+    const openAddDream = () => {
+      isAddingDream.value = true;
+      uiStore.hideSidebar(); // Cacher la sidebar
     };
 
-    const editDream = (id: number) => {
-      const dream = user.dreams.find((d) => d.id === id);
-      if (dream) {
-        // Implémentez une logique d'édition (ex. : ouvrir une modale ou naviguer vers un autre formulaire)
-        alert("Fonction d'édition à implémenter.");
-      }
-    };
-
-    const deleteDream = (id: number) => {
-      if (confirm("Voulez-vous vraiment supprimer ce rêve?")) {
-        const index = user.dreams.findIndex((d) => d.id === id);
-        if (index !== -1) {
-          user.dreams.splice(index, 1);
-          user.totalDreams -= 1;
-        }
-      }
-    };
-
-    const formatDate = (date: string): string => {
-      const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return new Date(date).toLocaleDateString(undefined, options);
+    const closeAddDream = () => {
+      isAddingDream.value = false;
+      uiStore.showSidebar(); // Afficher la sidebar
     };
 
     return {
       user,
-      handleDreamAdded,
-      editDream,
-      deleteDream,
-      formatDate,
+      isAddDreamOpen,
+      openAddDream,
+      closeAddDream,
+      isAddingDream,
     };
   },
 });
 </script>
 
 <style scoped lang="scss">
+@use "sass:color";
+@use "@/scss/variables.scss" as *;
+@use "@/scss/mixins.scss" as *;
+
 .dream-diaries {
   padding: 2em;
+  text-align: center;
 
   h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 1.5em;
+    color: $color-heading-primary;
+    margin-bottom: 1em;
+  }
+
+  p {
+    font-size: 1.1em;
+    color: $color-text-secondary;
+    margin-bottom: 2em;
+  }
+
+  .add-dream-button {
+    @include button($color-button-primary, $color-button-primary-text);
+    padding: 0.75em 1.5em;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: color.scale($color-button-primary, $lightness: -10%);
+    }
   }
 
   .dream-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1.5em;
-    justify-content: center;
-  }
+    flex-direction: column;
+    gap: 1em;
+    width: 100%;
+    max-width: 800px;
+    margin: 2em auto;
 
-  .dream-card {
-    background-color: #fff;
-    padding: 1.5em;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 300px;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    h3 {
-      margin: 0 0 0.5em 0;
-      color: #007bff;
-      font-size: 1.4em;
-    }
-
-    p {
-      color: #555;
-      margin: 0.5em 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 4; /* Limiter à 4 lignes */
-      -webkit-box-orient: vertical;
-    }
-
-    small {
-      display: block;
-      color: #888;
-      margin-bottom: 0.5em;
-    }
-
-    .actions {
+    .dream-card {
+      background-color: $color-card-background;
+      padding: 1.5em;
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       display: flex;
-      gap: 0.5em;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
 
-      button {
-        padding: 0.5em 1em;
-        background-color: #6c757d;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 0.9em;
-        transition: background-color 0.3s ease;
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
 
-        &:hover {
-          background-color: #5a6268;
+      h3 {
+        margin: 0 0 0.5em 0;
+        color: $color-heading-primary;
+        font-size: 1.4em;
+      }
+
+      p {
+        color: $color-text-secondary;
+        margin: 0.5em 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 4; // Limiter à 4 lignes
+        -webkit-box-orient: vertical;
+      }
+
+      small {
+        display: block;
+        color: $color-text-secondary;
+        margin-bottom: 0.5em;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.5em;
+
+        button {
+          padding: 0.5em 1em;
+          background-color: $color-hover;
+          color: #fff;
+          border: none;
+          border-radius: $border-radius;
+          cursor: pointer;
+          font-size: 0.9em;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: color.scale($color-hover, $lightness: -10%);
+          }
         }
       }
     }
@@ -176,17 +182,19 @@ export default defineComponent({
     margin-top: 2em;
 
     .back-dashboard {
-      padding: 0.5em 1.5em;
-      background-color: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
+      @include button($color-button-secondary, $color-button-secondary-text);
       text-decoration: none;
+      padding: 0.5em 1em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
       cursor: pointer;
-      transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: #218838;
+        background-color: color.scale(
+          $color-button-secondary,
+          $lightness: -10%
+        );
       }
     }
   }
@@ -197,18 +205,12 @@ export default defineComponent({
     padding: 1em;
 
     .dream-list {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .dream-card {
-      width: 100%;
+      margin: 1em auto;
     }
 
     .back-dashboard-container {
       .back-dashboard {
-        width: 100%;
-        text-align: center;
+        padding: 0.5em 1em;
       }
     }
   }

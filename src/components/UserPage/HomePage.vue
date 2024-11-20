@@ -5,6 +5,7 @@
     <HomeBackground />
     <!-- Sidebar -->
     <SideBarHome
+      v-if="uiStore.isSidebarVisible"
       :userProfileImage="user.profileImage"
       :username="user.username"
       :notifications="user.notifications"
@@ -16,7 +17,7 @@
     <Header :userProfileImage="user.profileImage" />
 
     <!-- Contenu principal -->
-    <main>
+    <main :class="{ mainWsidebar: uiStore.isSidebarVisible }">
       <router-view />
     </main>
   </div>
@@ -27,9 +28,9 @@ import { defineComponent, ref } from "vue";
 import Header from "./Header.vue";
 import SideBarHome from "./SideBarHome.vue";
 import HomeBackground from "@/assets/AnimatedBackground/HomeBackground.vue";
-import type { User } from "@/interfaces";
+import type { User } from "@/Interfaces";
 import { mockUser } from "@/data/user";
-
+import { useUIStore } from "@/store/uiStore";
 export default defineComponent({
   name: "HomePage",
   components: {
@@ -39,7 +40,7 @@ export default defineComponent({
   },
   setup() {
     const user: User = mockUser;
-
+    const uiStore = useUIStore();
     const stats = {
       totalDreams: user.totalDreams,
       totalAnalyses: user.totalAnalyses,
@@ -49,6 +50,7 @@ export default defineComponent({
     return {
       user,
       stats,
+      uiStore,
     };
   },
 });
@@ -60,8 +62,12 @@ export default defineComponent({
   min-height: 100vh;
   overflow: hidden;
 
-  main {
+  .mainWsidebar {
     margin-left: 260px; /* Largeur de la sidebar (220px) + left (20px) + marge */
+  }
+
+  main {
+    margin-left: 0px;
     padding: 2em;
     position: relative;
     z-index: 0;

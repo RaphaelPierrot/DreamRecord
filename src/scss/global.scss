@@ -1,5 +1,5 @@
 // global.scss
-
+@use "sass:color";
 @use "variables" as *;
 @use "mixins" as *;
 html,
@@ -20,7 +20,7 @@ a {
   @include transition;
 
   &:hover {
-    color: darken($color-link, 10%);
+    color: color.adjust($color-link, $lightness: -10%);
   }
 }
 

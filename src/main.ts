@@ -1,5 +1,6 @@
 // main.js ou main.ts
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router"; // Importer le routeur
 // Importation des composants Font Awesome
@@ -53,7 +54,9 @@ library.add(
 );
 
 const app = createApp(App);
+const pinia = createPinia();
 app.use(router); // Utiliser le routeur
+app.use(pinia);
 // Enregistrer le composant FontAwesomeIcon globalement
 app.component("font-awesome-icon", FontAwesomeIcon);
 

@@ -4,8 +4,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import WelcomePage from "../components/WelcomePage.vue";
 import AuthPage from "@/components/Authentification/AuthPage.vue";
 import HomePage from "@/components/UserPage/HomePage.vue";
-import DreamDiaries from "@/components/UserPage/composant/DreamDiaries/DreamDiaries.vue";
-import Dashboard from "@/components/UserPage/composant/Dashboard/Dashboard.vue";
+import DreamDiaries from "@/components/UserPage/DreamDiaries/DreamDiaries.vue";
+import Dashboard from "@/components/UserPage/Dashboard/Dashboard.vue";
 const routes = [
   {
     path: "/",

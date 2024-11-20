@@ -1,4 +1,4 @@
-import type { User, Dream } from "@/Interfaces";
+import type { User, Dream } from "../Interfaces";
 export const mockDreams: Dream[] = [
   {
     id: 1,
@@ -21,7 +21,6 @@ export const mockDreams: Dream[] = [
     date: "2024-04-15",
   },
 ];
-
 export const mockUser: User = {
   id: 1,
   username: "JeanDupont",
@@ -35,6 +34,6 @@ export const mockUser: User = {
     { message: "Votre rêve a été analysé", read: false },
     { message: "Nouvelle suggestion disponible", read: false },
     { message: "Mise à jour du système", read: true },
-  ] as Array<Notification>,
+  ],
   dreams: mockDreams,
 };

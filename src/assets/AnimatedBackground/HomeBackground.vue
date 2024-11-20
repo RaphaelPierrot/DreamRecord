@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import type { Star, ShootingStar } from "@/interfaces";
+import type { Star, ShootingStar } from "@/Interfaces";
 
 export default defineComponent({
   name: "HomeBackground",

@@ -1,113 +1,42 @@
-<!-- src/components/UserPage/DreamDiaries/AddDreamForm.vue -->
+<!-- src/components/UserPage/DreamDiaries/AddDream.vue -->
 <template>
-  <div class="add-dream-form">
-    <form @submit.prevent="submitForm">
-      <div class="form-section">
-        <label for="who">Qui ?</label>
-        <input
-          id="who"
-          v-model="form.who"
-          type="text"
-          placeholder="Ex. : Moi-même, un ami, etc."
-          required
-        />
-      </div>
-
-      <div class="form-section">
-        <label for="what">Quoi ?</label>
-        <textarea
-          id="what"
-          v-model="form.what"
-          placeholder="Décrivez les actions ou événements principaux"
-          required
-        ></textarea>
-      </div>
-
-      <div class="form-section">
-        <label for="where">Où ?</label>
-        <input
-          id="where"
-          v-model="form.where"
-          type="text"
-          placeholder="Lieu ou environnement du rêve"
-          required
-        />
-      </div>
-
-      <div class="form-section">
-        <label for="duration">Durée Estimée</label>
-        <select id="duration" v-model="form.duration" required>
-          <option value="" disabled>Choisissez une durée</option>
-          <option value="Moins de 5 minutes">Moins de 5 minutes</option>
-          <option value="5-15 minutes">5-15 minutes</option>
-          <option value="Plus de 15 minutes">Plus de 15 minutes</option>
-        </select>
-      </div>
-
-      <div class="form-section">
-        <label for="emotions">Comment vous êtes-vous senti ?</label>
-        <select id="emotions" v-model="form.emotions" required>
-          <option value="" disabled>Choisissez une émotion</option>
-          <option value="Heureux">Heureux</option>
-          <option value="Anxieux">Anxieux</option>
-          <option value="Triste">Triste</option>
-          <option value="Excité">Excité</option>
-          <option value="Autre">Autre</option>
-        </select>
-        <input
-          v-if="form.emotions === 'Autre'"
-          type="text"
-          v-model="form.emotions"
-          placeholder="Décrivez votre émotion"
-        />
-      </div>
-
-      <div class="form-section">
-        <label for="category">Catégorie</label>
-        <select id="category" v-model="form.category" required>
-          <option value="" disabled>Choisissez une catégorie</option>
-          <option value="Aventure">Aventure</option>
-          <option value="Cauchemar">Cauchemar</option>
-          <option value="Lucide">Lucide</option>
-          <option value="Symbolique">Symbolique</option>
-          <option value="Autre">Autre</option>
-        </select>
-        <input
-          v-if="form.category === 'Autre'"
-          type="text"
-          v-model="form.category"
-          placeholder="Décrivez la catégorie"
-        />
-      </div>
-
-      <div class="form-section">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          v-model="form.description"
-          placeholder="Description détaillée du rêve (10-30 mots)"
-          required
-        ></textarea>
-      </div>
-
-      <button type="submit" class="submit-btn">Soumettre le Rêve</button>
+  <div class="scroll-wrapper" ref="scrollWrapper">
+    <QuestionSection
+      v-for="(q, index) in questions"
+      :key="index"
+      :question="q.text"
+      :type="q.type"
+      :options="q.options"
+      :backgroundImage="q.background"
+      :hasNext="index < questions.length - 1"
+      @answer="handleAnswer(index, $event)"
+      @next="scrollToNext(index)"
+    />
+    <div class="final-section">
+      <h3>Merci d'avoir partagé votre rêve !</h3>
+      <button @click="submitDream">Soumettre</button>
       <p v-if="error" class="error">{{ error }}</p>
-    </form>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
-import type { Dream } from "@/interfaces";
+import { defineComponent, ref } from "vue";
+import QuestionSection from "./QuestionSection.vue";
+import { useUIStore } from "@/store/uiStore";
+import type { User, Dream } from "@/Interfaces";
 import { mockUser } from "@/data/user";
-
+import { questions } from "@/data/questions";
 export default defineComponent({
-  name: "AddDreamForm",
-  emits: ["dream-added"],
+  name: "AddDream",
+  components: {
+    QuestionSection,
+  },
   setup(_, { emit }) {
-    const user = mockUser;
+    const uiStore = useUIStore();
+    const user: User = mockUser;
 
-    const form = reactive<Dream>({
+    const newDream = ref<Dream>({
       id: Date.now(),
       title: "",
       description: "",
@@ -115,138 +44,192 @@ export default defineComponent({
       emotions: "",
       category: "",
       duration: "",
-      who: "",
-      what: "",
-      where: "",
+      characters: [],
+      location: "",
     });
 
     const error = ref("");
 
-    const submitForm = () => {
-      const wordCount = form.description.trim().split(/\s+/).length;
-      if (wordCount < 10 || wordCount > 30) {
-        error.value = "La description doit contenir entre 10 et 30 mots.";
-        return;
+    const scrollWrapper = ref<HTMLElement | null>(null);
+
+    const handleAnswer = (index: number, answer: string) => {
+      switch (index) {
+        case 0:
+          if (!newDream.value.characters) newDream.value.characters = [];
+          newDream.value.characters.push(answer);
+          break;
+        case 1:
+          newDream.value.description = answer;
+          break;
+        case 2:
+          newDream.value.location = answer;
+          break;
+        case 3:
+          newDream.value.duration = answer;
+          break;
+        case 4:
+          newDream.value.emotions = answer;
+          break;
+        default:
+          break;
       }
-
-      if (form.emotions === "Autre") {
-        form.emotions = form.emotions;
-      }
-
-      if (form.category === "Autre") {
-        form.category = form.category;
-      }
-
-      // Ajouter le rêve
-      user.dreams.push({ ...form, id: Date.now() });
-      user.totalDreams += 1;
-
-      // Réinitialiser le formulaire
-      Object.assign(form, {
-        id: Date.now(),
-        title: "",
-        description: "",
-        date: "",
-        emotions: "",
-        category: "",
-        duration: "",
-        who: "",
-        what: "",
-        where: "",
-        customEmotion: "",
-        customCategory: "",
-      });
-
-      error.value = "";
-      emit("dream-added");
     };
 
+    const scrollToNext = (index: number) => {
+      if (scrollWrapper.value) {
+        const nextSection = scrollWrapper.value.children[
+          index + 1
+        ] as HTMLElement;
+        if (nextSection) {
+          nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    };
+
+    const submitDream = () => {
+      if (
+        newDream.value.title &&
+        newDream.value.description &&
+        newDream.value.date &&
+        newDream.value.emotions &&
+        newDream.value.location &&
+        newDream.value.duration
+      ) {
+        user.dreams.push({ ...newDream.value, id: Date.now() });
+        user.totalDreams += 1;
+        // Réinitialiser le formulaire
+        newDream.value = {
+          id: Date.now(),
+          title: "",
+          description: "",
+          date: "",
+          emotions: "",
+          category: "",
+          duration: "",
+          characters: [],
+          location: "",
+        };
+        error.value = "";
+        uiStore.showSidebar(); // Afficher la sidebar après soumission
+        emit("close");
+      } else {
+        error.value = "Veuillez remplir tous les champs obligatoires.";
+      }
+    };
+
+    const closeForm = () => {
+      uiStore.showSidebar(); // Afficher la sidebar lorsque le formulaire est fermé
+      emit("close");
+    };
+
+    // Masquer la sidebar lors de l'ouverture du formulaire
+    uiStore.hideSidebar();
+
     return {
-      form,
-      submitForm,
+      user,
+      newDream,
+      submitDream,
       error,
+      questions,
+      scrollWrapper,
+      handleAnswer,
+      scrollToNext,
+      closeForm,
     };
   },
 });
 </script>
 
 <style scoped lang="scss">
-.add-dream-form {
-  form {
+@use "sass:color";
+@use "@/scss/variables.scss" as *;
+@use "@/scss/mixins.scss" as *;
+
+.add-dream-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.add-dream-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .close-button {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: $color-text-secondary;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $color-heading-primary;
+    }
+  }
+
+  .scroll-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 1.5em;
-    max-width: 800px;
-    margin: 0 auto;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    height: 100%;
     padding: 2em;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1s ease-in-out;
+  }
 
-    .form-section {
-      display: flex;
-      flex-direction: column;
+  .final-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2em;
 
-      label {
-        margin-bottom: 0.5em;
-        font-weight: bold;
-        color: #333;
-      }
-
-      input,
-      textarea,
-      select {
-        padding: 0.75em;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 1em;
-        transition: border-color 0.3s ease;
-
-        &:focus {
-          border-color: #007bff;
-          outline: none;
-        }
-      }
-
-      input[type="text"] {
-        display: block;
-        margin-top: 0.5em;
-      }
+    h3 {
+      margin-bottom: 1em;
+      color: $color-heading-primary;
     }
 
-    .submit-btn {
+    button {
+      @include button($color-button-primary, $color-button-primary-text);
       padding: 0.75em 1.5em;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
       font-size: 1em;
       transition: background-color 0.3s ease;
-      align-self: flex-end;
 
       &:hover {
-        background-color: #0056b3;
+        background-color: color.scale($color-button-primary, $lightness: -10%);
       }
     }
 
     .error {
       color: red;
-      text-align: center;
       font-size: 0.9em;
+      margin-top: 1em;
     }
   }
+}
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 </style>

@@ -15,7 +15,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
-
+import { useUIStore } from "../../store/uiStore";
 export default defineComponent({
   name: "Header",
   props: {
@@ -25,12 +25,15 @@ export default defineComponent({
     },
   },
   setup() {
+    const uiStore = useUIStore();
     const router = useRouter();
     const goToHome = () => {
       router.push({ path: "/home" });
+      uiStore.showSidebar();
     };
     const goToProfile = () => {
       router.push({ name: "profile" });
+      uiStore.showSidebar();
     };
 
     return {

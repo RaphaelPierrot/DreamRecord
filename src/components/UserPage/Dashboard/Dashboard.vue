@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import DashboardCard from "./DashboardCard.vue";
-import type { Feature } from "@/interfaces";
+import type { Feature } from "@/Interfaces";
 
 export default defineComponent({
   name: "Dashboard",
