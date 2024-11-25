@@ -26,8 +26,9 @@ jobs:
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.1
         with:
-          server: ftps://ftp.DreamRecord.net
+          server: ftp.dreamrecord.net
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
           local-dir: ./dist # Chemin vers votre dossier de build
           server-dir: /public_html # Chemin sur le serveur
