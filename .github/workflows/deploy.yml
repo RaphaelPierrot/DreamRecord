@@ -30,5 +30,5 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          local-dir: ./dist # Chemin vers votre dossier de build
+          local-dir: ./dist/ # Chemin vers votre dossier de build
           server-dir: /public_html # Chemin sur le serveur
