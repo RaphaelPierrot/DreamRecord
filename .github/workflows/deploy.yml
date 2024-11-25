@@ -1,0 +1,33 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main # Branche à surveiller pour le déploiement
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # Adapter selon votre version de Node.js
+
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build  # Compile vos fichiers TypeScript en JavaScript
+
+      - name: Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.1
+        with:
+          server: ftps://ftp.DreamRecord.net
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist # Chemin vers votre dossier de build
+          server-dir: /public_html # Chemin sur le serveur
