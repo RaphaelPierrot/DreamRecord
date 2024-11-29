@@ -298,7 +298,7 @@ export default defineComponent({
 
       try {
         const response = await axios.post(
-          "https://dreamrecord.net/signup.php",
+          "https://dreamrecord.net/backend/auth/signup.php",
           {
             email: email.value,
             password: password.value,
