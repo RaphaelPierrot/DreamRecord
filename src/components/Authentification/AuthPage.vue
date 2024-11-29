@@ -39,10 +39,10 @@
     <!-- Speech Bubble Container -->
     <div class="speech-bubble-container">
       <div class="tabs">
-        <button :class="{ active: isLogin }" @click="isLogin = true">
+        <button :class="{ active: isLogin }" @click="setMode('login')">
           Connexion
         </button>
-        <button :class="{ active: !isLogin }" @click="isLogin = false">
+        <button :class="{ active: !isLogin }" @click="setMode('signup')">
           Inscription
         </button>
       </div>
@@ -164,8 +164,10 @@
 
 <script lang="ts">
 import router from "@/router";
+import type { RefSymbol } from "@vue/reactivity";
+import axios from "axios";
 import { defineComponent, ref, computed, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 interface ShootingStar {
   top: number;
@@ -184,9 +186,14 @@ export default defineComponent({
   name: "AuthPage",
   setup() {
     const route = useRoute();
+    const router = useRouter();
+
     const mode = computed(() => (route.query.mode as string) || "login");
 
     const isLogin = ref(mode.value !== "signup");
+    const setMode = (modeValue: string) => {
+      router.push({ query: { ...route.query, mode: modeValue } });
+    };
 
     watch(
       () => mode.value,
@@ -240,26 +247,76 @@ export default defineComponent({
     generateShootingStars(5);
     generateMilkyWayStars(200);
 
-    // Dans handleLogin() ou handleSignup()
-    const handleLogin = () => {
+    const handleLogin = async () => {
       isSubmitting.value = true;
-      // Simuler un appel API
-      setTimeout(() => {
+      loginError.value = "";
+
+      // Validation avant l'envoi
+      validateEmail();
+      validatePassword();
+
+      if (emailError.value || passwordError.value) {
         isSubmitting.value = false;
-        // Après une connexion réussie
-        router.push({ name: "home" });
-      }, 2000);
+        return;
+      }
+
+      try {
+        const response = await axios.post("https://dreamrecord.net/login.php", {
+          email: email.value,
+          password: password.value,
+        });
+
+        if (response.data.status === "success") {
+          // Stocker les informations de l'utilisateur si nécessaire
+          // Rediriger vers la page d'accueil
+          // Stocker le token ou l'ID de l'utilisateur
+          localStorage.setItem("userId", response.data.userId);
+          router.push({ name: "home" });
+        } else {
+          loginError.value = response.data.message;
+        }
+      } catch (error) {
+        loginError.value = "Une erreur s'est produite. Veuillez réessayer.";
+      } finally {
+        isSubmitting.value = false;
+      }
     };
 
-    const handleSignup = () => {
+    const handleSignup = async () => {
       isSubmitting.value = true;
-      // Simulate API call
-      setTimeout(() => {
+      signupError.value = "";
+
+      // Validation avant l'envoi
+      validateEmail();
+      validatePassword();
+      validateUsername();
+
+      if (emailError.value || passwordError.value || usernameError.value) {
         isSubmitting.value = false;
-        // Handle signup logic
-        // If error occurs:
-        // signupError.value = "L'inscription a échoué.";
-      }, 2000);
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          "https://dreamrecord.net/signup.php",
+          {
+            email: email.value,
+            password: password.value,
+            username: username.value,
+          }
+        );
+
+        if (response.data.status === "success") {
+          // Rediriger vers la page de connexion ou autre action
+          router.push({ name: "home" });
+        } else {
+          signupError.value = response.data.message;
+        }
+      } catch (error) {
+        signupError.value = "Une erreur s'est produite. Veuillez réessayer.";
+      } finally {
+        isSubmitting.value = false;
+      }
     };
 
     const validateEmail = () => {
@@ -310,11 +367,11 @@ export default defineComponent({
       togglePasswordVisibility,
       loginWithGoogle,
       loginWithFacebook,
+      setMode,
     };
   },
 });
 </script>
-
 <style lang="scss" scoped>
 @use "sass:color";
 @use "@/scss/variables.scss" as *;

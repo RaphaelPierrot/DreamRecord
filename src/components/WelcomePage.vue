@@ -289,8 +289,7 @@ export default defineComponent({
       background-color: rgba(255, 255, 255, 0.1);
       border-radius: $border-radius;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-      max-width: 800px;
-      width: 100%;
+      width: 80%;
       @include transition;
 
       &:hover {
@@ -314,6 +313,7 @@ export default defineComponent({
         .feature-text {
           flex: 1;
           cursor: default;
+
           h2 {
             @include heading(2em);
             color: $color-heading-secondary;
@@ -323,6 +323,24 @@ export default defineComponent({
           p {
             @include body-text;
             color: white;
+          }
+        }
+      }
+
+      @media (max-width: 768px) {
+        .feature-content {
+          flex-direction: column;
+          align-items: center;
+          .feature-text {
+            h2 {
+              @include heading(1.5em); // Réduire la taille du titre
+              text-align: center;
+            }
+
+            p {
+              font-size: 0.9em; // Réduire la taille du texte pour s'adapter à l'écran
+              text-align: center; // Centrer le texte sur mobile
+            }
           }
         }
       }
