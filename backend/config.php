@@ -1,6 +1,6 @@
 <?php
 // config.php
-$host = 'localhost';
+$host = '127.0.0.1';
 $db   = 'DreamRecord';
 $user = 'Admin';
 $pass = 'Naila1305';

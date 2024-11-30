@@ -3,7 +3,7 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
 // signup.php
-require 'config.php';
+require '../config.php';
 
 // Récupérer les données POST
 $data = json_decode(file_get_contents('php://input'), true);
