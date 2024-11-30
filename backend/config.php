@@ -1,8 +1,8 @@
 <?php
 // config.php
-$host = '127.0.0.1';
-$db   = 'DreamRecord';
-$user = 'Admin';
+$host = '193.203.168.151';
+$db   = 'u753329440_DreamRecord';
+$user = 'u753329440_Admin';
 $pass = 'Naila1305';
 $charset = 'utf8mb4';
 

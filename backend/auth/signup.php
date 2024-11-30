@@ -1,5 +1,8 @@
 <?php
+//header('Access-Control-Allow-Origin: https://dreamrecord.net');
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json');
 
 // signup.php

@@ -22,7 +22,6 @@ jobs:
         run: |
           npm install
           npm run build
-          cp -R backend/ dist/backend/
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.1
         with:

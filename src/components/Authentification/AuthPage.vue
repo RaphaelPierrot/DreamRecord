@@ -168,7 +168,7 @@ import type { RefSymbol } from "@vue/reactivity";
 import axios from "axios";
 import { defineComponent, ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
+import apiClient from "@/services/apiClient";
 interface ShootingStar {
   top: number;
   left: number;
@@ -297,15 +297,11 @@ export default defineComponent({
       }
 
       try {
-        const response = await axios.post(
-          "https://dreamrecord.net/backend/auth/signup.php",
-          {
-            email: email.value,
-            password: password.value,
-            username: username.value,
-          }
-        );
-
+        const response = await apiClient.post("/auth/signup.php", {
+          email: email.value,
+          password: password.value,
+          username: username.value,
+        });
         if (response.data.status === "success") {
           // Rediriger vers la page de connexion ou autre action
           router.push({ name: "home" });
