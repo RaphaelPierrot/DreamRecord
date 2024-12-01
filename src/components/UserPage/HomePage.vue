@@ -63,7 +63,7 @@ export default defineComponent({
   overflow: hidden;
 
   .mainWsidebar {
-    margin-left: 260px; /* Largeur de la sidebar (220px) + left (20px) + marge */
+    margin-left: 230px; /* Largeur de la sidebar (220px) + left (20px) + marge */
   }
 
   main {

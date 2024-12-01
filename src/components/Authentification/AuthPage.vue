@@ -163,8 +163,6 @@
 </template>
 
 <script lang="ts">
-import router from "@/router";
-import type { RefSymbol } from "@vue/reactivity";
 import axios from "axios";
 import { defineComponent, ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -261,10 +259,13 @@ export default defineComponent({
       }
 
       try {
-        const response = await axios.post("https://dreamrecord.net/login.php", {
-          email: email.value,
-          password: password.value,
-        });
+        const response = await axios.post(
+          "https://api.dreamrecord.net/auth/login.php",
+          {
+            email: email.value,
+            password: password.value,
+          }
+        );
 
         if (response.data.status === "success") {
           // Stocker les informations de l'utilisateur si nécessaire

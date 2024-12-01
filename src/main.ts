@@ -28,7 +28,6 @@ import {
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import "./registerServiceWorker";
 
 // Ajouter les icônes à la bibliothèque
 library.add(
@@ -53,21 +52,6 @@ library.add(
   faChevronLeft,
   faChevronRight
 );
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .then((registration) => {
-        console.log(
-          "Service Worker registered with scope:",
-          registration.scope
-        );
-      })
-      .catch((error) => {
-        console.error("Service Worker registration failed:", error);
-      });
-  });
-}
 
 const app = createApp(App);
 const pinia = createPinia();

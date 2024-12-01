@@ -60,7 +60,18 @@ export default defineComponent({
   gap: 1em;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
-
+  margin-left: 20px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: calc(200px + 2.5em);
+    margin-left: 0px;
+  }
+  @media (max-width: 650px) {
+    flex-direction: column;
+    height: calc(200px + 5.5em);
+    width: 200px;
+    margin-left: 0px;
+  }
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -94,7 +105,6 @@ export default defineComponent({
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
-      -webkit-line-clamp: 4; // Limiter à 4 lignes
       -webkit-box-orient: vertical;
     }
 
@@ -102,7 +112,9 @@ export default defineComponent({
       @include button($color-button-primary, $color-button-primary-text);
       text-decoration: none;
       align-self: center; // Centrer le lien
-
+      @media (max-width: 650px) {
+        bottom: 10px;
+      }
       &:hover {
         background-color: color.adjust($color-button-primary, $lightness: -10%);
       }

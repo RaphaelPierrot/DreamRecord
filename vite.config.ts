@@ -6,6 +6,7 @@ import { VitePWA } from "vite-plugin-pwa";
 // https://vite.dev/config/
 
 export default defineConfig({
+  base: "/",
   plugins: [
     vue(),
     VitePWA({
@@ -18,12 +19,12 @@ export default defineConfig({
         theme_color: "#4A90E2",
         icons: [
           {
-            src: "src/assets/icon.png",
+            src: "icon.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "src/assets/icon.png",
+            src: "icon.png",
             sizes: "512x512",
             type: "image/png",
           },

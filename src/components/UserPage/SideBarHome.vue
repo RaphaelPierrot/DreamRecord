@@ -112,8 +112,11 @@ export default defineComponent({
   position: fixed;
   top: 80px; /* Hauteur du header */
   left: 20px;
-  width: 220px;
-  height: calc(100vh - 80px);
+  width: 35%;
+  max-width: 220px;
+  margin-top: 50px;
+
+  height: calc(100vh - 140px);
   background: $color-card-background;
   color: $color-text-primary;
   padding: 1.5em;
@@ -230,18 +233,12 @@ export default defineComponent({
 @media (max-width: 768px) {
   .sidebar {
     left: 10px;
-    width: 60px;
+
     padding: 1em;
 
     &.collapsed {
       width: 0;
       padding: 0;
-    }
-
-    .user-info h3,
-    .sidebar-content section h4,
-    .sidebar-content section p {
-      display: none;
     }
 
     .toggle-btn {

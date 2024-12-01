@@ -66,7 +66,6 @@ export default defineComponent({
 
 .dashboard {
   padding: 2em;
-
   h2 {
     text-align: center;
     color: $color-heading-primary;
@@ -74,7 +73,7 @@ export default defineComponent({
   }
 
   .dashboard-cards {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
     gap: 1em;
     justify-content: center;
