@@ -25,7 +25,7 @@ export const mockUser: User = {
   id: 1,
   username: "JeanDupont",
   email: "jean.dupont@example.com",
-  profileImage: "src/assets/default-profile.png",
+  profileImage: "default-profile.png",
   totalDreams: 42,
   totalAnalyses: 38,
   totalAdvice: 15,

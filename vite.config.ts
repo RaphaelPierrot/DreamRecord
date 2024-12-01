@@ -6,7 +6,6 @@ import { VitePWA } from "vite-plugin-pwa";
 // https://vite.dev/config/
 
 export default defineConfig({
-  base: "/",
   plugins: [
     vue(),
     VitePWA({
@@ -33,6 +32,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       workbox: {
         globPatterns: ["**/*.{js,css,html,png,svg,ts,scss}"],
+      },
+      devOptions: {
+        enabled: true, // Pour activer le PWA en mode dev
       },
     }),
   ],
