@@ -52,10 +52,9 @@ export default defineComponent({
 
     const deleteDream = (id: number) => {
       if (confirm("Voulez-vous vraiment supprimer ce rêve?")) {
-        const index = user.dreams.findIndex((d) => d.id === id);
+        const index = user.dreams!.findIndex((d) => d.id === id);
         if (index !== -1) {
-          user.dreams.splice(index, 1);
-          user.totalDreams -= 1;
+          user.dreams?.splice(index, 1);
         }
       }
     };
