@@ -9,7 +9,7 @@
       :userProfileImage="ProfileImage"
       :username="username"
       :notifications="notifications!"
-      :stats="stats"
+      :stats="stats.value"
       :dailyAdvice="daily_advice"
     />
 
@@ -31,6 +31,7 @@ import HomeBackground from "@/assets/AnimatedBackground/HomeBackground.vue";
 
 import { useUIStore } from "@/store/uiStore";
 import { useUserStore } from "@/store";
+import { mockDreams } from "@/data/user";
 
 const userStore = useUserStore();
 
@@ -40,11 +41,12 @@ onMounted(() => {
 
 const user = computed(() => userStore.user);
 const uiStore = useUIStore();
-const stats = {
-  totalDreams: computed(() => user.value?.dreams?.length || 0),
-  totalAnalyses: computed(() => user.value?.analyses?.length || 0),
-  totalAdvice: computed(() => user.value?.advices?.length || 0),
-};
+const stats = computed(() => ({
+  totalDreams: user.value?.dreams?.length || mockDreams,
+  totalAnalyses: user.value?.analyses?.length || 0,
+  totalAdvice: user.value?.advices?.length || 0,
+}));
+
 const ProfileImage = computed(
   () => user.value?.profile_image || "default-profile.png"
 );

@@ -4,14 +4,16 @@ header('Access-Control-Allow-Origin: https://dreamrecord.net');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json');
-use Firebase\JWT\JWT;
-// signup.php
 require '../config.php';
 require '../vendor/autoload.php';
-// Récupérer les données POST
-$data = json_decode(file_get_contents('php://input'), true);
-$secret_key = "04ebb9d31172a954ec9db6dbf498a4ec83d3ea180cbf48cbe12e822f92cbf7d6"; 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Dotenv\Dotenv;
 
+$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
+$secret_key = $_ENV['SECRET_KEY'];
 $username = trim($data['username']);
 $email = trim($data['email']);
 $password = $data['password'];
