@@ -6,15 +6,15 @@
     <!-- Sidebar -->
     <SideBarHome
       v-if="uiStore.isSidebarVisible"
-      :userProfileImage="user.profileImage"
-      :username="user.username"
-      :notifications="user.notifications"
+      :userProfileImage="ProfileImage"
+      :username="username"
+      :notifications="notifications!"
       :stats="stats"
-      :dailyAdvice="user.dailyAdvice"
+      :dailyAdvice="daily_advice"
     />
 
     <!-- Header -->
-    <Header :userProfileImage="user.profileImage" />
+    <Header :userProfileImage="ProfileImage" />
 
     <!-- Contenu principal -->
     <main :class="{ mainWsidebar: uiStore.isSidebarVisible }">
@@ -23,37 +23,45 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted } from "vue";
 import Header from "./Header.vue";
 import SideBarHome from "./SideBarHome.vue";
 import HomeBackground from "@/assets/AnimatedBackground/HomeBackground.vue";
-import type { User } from "@/Interfaces";
-import { mockUser } from "@/data/user";
-import { useUIStore } from "@/store/uiStore";
-export default defineComponent({
-  name: "HomePage",
-  components: {
-    Header,
-    SideBarHome,
-    HomeBackground,
-  },
-  setup() {
-    const user: User = mockUser;
-    const uiStore = useUIStore();
-    const stats = {
-      totalDreams: user.totalDreams,
-      totalAnalyses: user.totalAnalyses,
-      totalAdvice: user.totalAdvice,
-    };
 
-    return {
-      user,
-      stats,
-      uiStore,
-    };
-  },
+import { useUIStore } from "@/store/uiStore";
+import { useUserStore } from "@/store";
+
+const userStore = useUserStore();
+
+onMounted(() => {
+  userStore.fetchUser();
 });
+
+const user = computed(() => userStore.user);
+const uiStore = useUIStore();
+const stats = {
+  totalDreams: computed(() => user.value?.dreams?.length || 0),
+  totalAnalyses: computed(() => user.value?.analyses?.length || 0),
+  totalAdvice: computed(() => user.value?.advices?.length || 0),
+};
+const ProfileImage = computed(
+  () => user.value?.profile_image || "default-profile.png"
+);
+const notifications = computed(
+  () =>
+    user.value?.notifications || [
+      { message: "Votre rêve a été analysé", read: false },
+      { message: "Nouvelle suggestion disponible", read: false },
+      { message: "Mise à jour du système", read: true },
+    ]
+);
+const username = computed(() => user.value?.username || "JeanDupont");
+const daily_advice = computed(
+  () =>
+    user.value?.daily_advice ||
+    "Prenez quelques minutes ce soir pour méditer avant de dormir."
+);
 </script>
 
 <style scoped lang="scss">

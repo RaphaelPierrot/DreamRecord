@@ -162,11 +162,12 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import axios from "axios";
-import { defineComponent, ref, computed, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import apiClient from "@/services/apiClient";
+import { useUserStore } from "@/store";
 interface ShootingStar {
   top: number;
   left: number;
@@ -180,194 +181,167 @@ interface Star {
   size: number;
 }
 
-export default defineComponent({
-  name: "AuthPage",
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
+const route = useRoute();
+const router = useRouter();
 
-    const mode = computed(() => (route.query.mode as string) || "login");
+const mode = computed(() => (route.query.mode as string) || "login");
 
-    const isLogin = ref(mode.value !== "signup");
-    const setMode = (modeValue: string) => {
-      router.push({ query: { ...route.query, mode: modeValue } });
-    };
+const isLogin = ref(mode.value !== "signup");
+const setMode = (modeValue: string) => {
+  router.push({ query: { ...route.query, mode: modeValue } });
+};
 
-    watch(
-      () => mode.value,
-      (newMode) => {
-        isLogin.value = newMode !== "signup";
-      }
-    );
+watch(
+  () => mode.value,
+  (newMode) => {
+    isLogin.value = newMode !== "signup";
+  }
+);
 
-    const email = ref("");
-    const password = ref("");
-    const username = ref("");
-    const rememberMe = ref(false);
-    const showPassword = ref(false);
-    const isSubmitting = ref(false);
-    const loginError = ref("");
-    const signupError = ref("");
+const email = ref("");
+const password = ref("");
+const username = ref("");
+const rememberMe = ref(false);
+const showPassword = ref(false);
+const isSubmitting = ref(false);
+const loginError = ref("");
+const signupError = ref("");
 
-    // Validation errors
-    const emailError = ref(false);
-    const passwordError = ref(false);
-    const usernameError = ref(false);
+// Validation errors
+const emailError = ref(false);
+const passwordError = ref(false);
+const usernameError = ref(false);
 
-    // Shooting stars and Milky Way stars
-    const shootingStars = ref<ShootingStar[]>([]);
-    const milkyWayStars = ref<Star[]>([]);
+// Shooting stars and Milky Way stars
+const shootingStars = ref<ShootingStar[]>([]);
+const milkyWayStars = ref<Star[]>([]);
 
-    const generateShootingStars = (count: number) => {
-      for (let i = 0; i < count; i++) {
-        shootingStars.value.push({
-          top: Math.random() * 100,
-          left: Math.random() * 100,
-          delay: Math.random() * 20,
-        });
-      }
-    };
+const generateShootingStars = (count: number) => {
+  for (let i = 0; i < count; i++) {
+    shootingStars.value.push({
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      delay: Math.random() * 20,
+    });
+  }
+};
 
-    const generateMilkyWayStars = (count: number) => {
-      const bandWidth = 10; // Adjust the width of the Milky Way band
-      for (let i = 0; i < count; i++) {
-        const left = Math.random() * 100;
-        const offset = (Math.random() - 0.5) * bandWidth;
-        milkyWayStars.value.push({
-          top: 100 - left + offset,
-          left: left,
-          delay: Math.random() * 5,
-          size: Math.random() * 2 + 1,
-        });
-      }
-    };
+const generateMilkyWayStars = (count: number) => {
+  const bandWidth = 10; // Adjust the width of the Milky Way band
+  for (let i = 0; i < count; i++) {
+    const left = Math.random() * 100;
+    const offset = (Math.random() - 0.5) * bandWidth;
+    milkyWayStars.value.push({
+      top: 100 - left + offset,
+      left: left,
+      delay: Math.random() * 5,
+      size: Math.random() * 2 + 1,
+    });
+  }
+};
 
-    generateShootingStars(5);
-    generateMilkyWayStars(200);
+generateShootingStars(5);
+generateMilkyWayStars(200);
 
-    const handleLogin = async () => {
-      isSubmitting.value = true;
-      loginError.value = "";
+const handleLogin = async () => {
+  isSubmitting.value = true;
+  loginError.value = "";
 
-      // Validation avant l'envoi
-      validateEmail();
-      validatePassword();
+  // Validation avant l'envoi
+  validateEmail();
+  validatePassword();
 
-      if (emailError.value || passwordError.value) {
-        isSubmitting.value = false;
-        return;
-      }
+  if (emailError.value || passwordError.value) {
+    isSubmitting.value = false;
+    return;
+  }
 
-      try {
-        const response = await axios.post(
-          "https://api.dreamrecord.net/auth/login.php",
-          {
-            email: email.value,
-            password: password.value,
-          }
-        );
+  try {
+    const response = await apiClient.post("/auth/login.php", {
+      email: email.value,
+      password: password.value,
+    });
 
-        if (response.data.status === "success") {
-          // Stocker les informations de l'utilisateur si nécessaire
-          // Rediriger vers la page d'accueil
-          // Stocker le token ou l'ID de l'utilisateur
-          localStorage.setItem("userId", response.data.userId);
-          router.push({ name: "home" });
-        } else {
-          loginError.value = response.data.message;
-        }
-      } catch (error) {
-        loginError.value = "Une erreur s'est produite. Veuillez réessayer.";
-      } finally {
-        isSubmitting.value = false;
-      }
-    };
+    if (response.data.status === "success") {
+      // Stocker le token JWT
+      localStorage.setItem("token", response.data.token);
+      // Mettre à jour le store utilisateur
+      const userStore = useUserStore();
+      await userStore.fetchUser();
 
-    const handleSignup = async () => {
-      isSubmitting.value = true;
-      signupError.value = "";
+      // Rediriger vers la page d'accueil
+      router.push({ name: "home" });
+    } else {
+      loginError.value = response.data.message;
+    }
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      loginError.value = error.response.data.message;
+    } else {
+      loginError.value = "Une erreur s'est produite. Veuillez réessayer.";
+    }
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 
-      // Validation avant l'envoi
-      validateEmail();
-      validatePassword();
-      validateUsername();
+const handleSignup = async () => {
+  isSubmitting.value = true;
+  signupError.value = "";
 
-      if (emailError.value || passwordError.value || usernameError.value) {
-        isSubmitting.value = false;
-        return;
-      }
+  // Validation avant l'envoi
+  validateEmail();
+  validatePassword();
+  validateUsername();
 
-      try {
-        const response = await apiClient.post("/auth/signup.php", {
-          email: email.value,
-          password: password.value,
-          username: username.value,
-        });
-        if (response.data.status === "success") {
-          // Rediriger vers la page de connexion ou autre action
-          router.push({ name: "home" });
-        } else {
-          signupError.value = response.data.message;
-        }
-      } catch (error) {
-        signupError.value = "Une erreur s'est produite. Veuillez réessayer.";
-      } finally {
-        isSubmitting.value = false;
-      }
-    };
+  if (emailError.value || passwordError.value || usernameError.value) {
+    isSubmitting.value = false;
+    return;
+  }
 
-    const validateEmail = () => {
-      const regex = /\S+@\S+\.\S+/;
-      emailError.value = !regex.test(email.value);
-    };
+  try {
+    const response = await apiClient.post("/auth/signup.php", {
+      email: email.value,
+      password: password.value,
+      username: username.value,
+    });
+    if (response.data.status === "success") {
+      // Rediriger vers la page de connexion ou autre action
+      router.push({ name: "home" });
+    } else {
+      signupError.value = response.data.message;
+    }
+  } catch (error) {
+    signupError.value = "Une erreur s'est produite. Veuillez réessayer.";
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 
-    const validatePassword = () => {
-      passwordError.value = password.value.length < 6;
-    };
+const validateEmail = () => {
+  const regex = /\S+@\S+\.\S+/;
+  emailError.value = !regex.test(email.value);
+};
 
-    const validateUsername = () => {
-      usernameError.value = username.value.trim().length < 3;
-    };
+const validatePassword = () => {
+  passwordError.value = password.value.length < 6;
+};
 
-    const togglePasswordVisibility = () => {
-      showPassword.value = !showPassword.value;
-    };
+const validateUsername = () => {
+  usernameError.value = username.value.trim().length < 3;
+};
 
-    const loginWithGoogle = () => {
-      // Logic for Google login
-    };
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
 
-    const loginWithFacebook = () => {
-      // Logic for Facebook login
-    };
+const loginWithGoogle = () => {
+  // Logic for Google login
+};
 
-    return {
-      isLogin,
-      email,
-      password,
-      username,
-      rememberMe,
-      showPassword,
-      isSubmitting,
-      loginError,
-      signupError,
-      emailError,
-      passwordError,
-      usernameError,
-      shootingStars,
-      milkyWayStars,
-      handleLogin,
-      handleSignup,
-      validateEmail,
-      validatePassword,
-      validateUsername,
-      togglePasswordVisibility,
-      loginWithGoogle,
-      loginWithFacebook,
-      setMode,
-    };
-  },
-});
+const loginWithFacebook = () => {
+  // Logic for Facebook login
+};
 </script>
 <style lang="scss" scoped>
 @use "sass:color";

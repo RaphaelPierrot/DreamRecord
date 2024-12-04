@@ -95,8 +95,7 @@ export default defineComponent({
         newDream.value.location &&
         newDream.value.duration
       ) {
-        user.dreams.push({ ...newDream.value, id: Date.now() });
-        user.totalDreams += 1;
+        user.dreams?.push({ ...newDream.value, id: Date.now() });
         // Réinitialiser le formulaire
         newDream.value = {
           id: Date.now(),

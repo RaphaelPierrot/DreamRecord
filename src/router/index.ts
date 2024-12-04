@@ -6,6 +6,7 @@ import AuthPage from "@/components/Authentification/AuthPage.vue";
 import HomePage from "@/components/UserPage/HomePage.vue";
 import DreamDiaries from "@/components/UserPage/DreamDiaries/DreamDiaries.vue";
 import Dashboard from "@/components/UserPage/Dashboard/Dashboard.vue";
+import { useUserStore } from "@/store";
 const routes = [
   {
     path: "/",
@@ -42,18 +43,19 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-/*// Fonction pour vérifier si l'utilisateur est authentifié
-const isAuthenticated = () => {
-  // Implémentez la logique pour vérifier le statut d'authentification
-  // Par exemple, vérifier si un token valide existe dans localStorage
-  return !!localStorage.getItem('authToken');
-};
+// Guard de navigation
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !isAuthenticated()) {
-    next({ name: 'auth' });
+  if (to.meta.requiresAuth && !userStore.isAuthenticated) {
+    await userStore.fetchUser();
+    if (!userStore.isAuthenticated) {
+      next({ name: "login" });
+    } else {
+      next();
+    }
   } else {
     next();
   }
-});*/
+});
 export default router;

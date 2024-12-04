@@ -2,15 +2,16 @@
 
 import type { Dream } from "./dream";
 import type { Notification } from "./notification";
+import type { Advice } from "./advice";
+import type { Analyse } from "./analyse";
 export interface User {
   id: number;
   username: string;
   email: string;
-  profileImage: string;
-  totalDreams: number;
-  totalAnalyses: number;
-  totalAdvice: number;
-  notifications: Notification[];
-  dailyAdvice: string;
-  dreams: Dream[]; // Ajouté pour lier les rêves
+  profile_image?: string;
+  daily_advice?: string;
+  dreams?: Dream[];
+  notifications?: Notification[];
+  analyses?: Analyse[];
+  advices?: Advice[];
 }

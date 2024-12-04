@@ -6,3 +6,5 @@ export * from "./feature";
 export * from "./notification";
 export * from "./user";
 export * from "./question";
+export * from "./advice";
+export * from "./analyse";

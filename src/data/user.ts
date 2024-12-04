@@ -25,11 +25,8 @@ export const mockUser: User = {
   id: 1,
   username: "JeanDupont",
   email: "jean.dupont@example.com",
-  profileImage: "default-profile.png",
-  totalDreams: 42,
-  totalAnalyses: 38,
-  totalAdvice: 15,
-  dailyAdvice: "Prenez quelques minutes ce soir pour méditer avant de dormir.",
+  profile_image: "default-profile.png",
+  daily_advice: "Prenez quelques minutes ce soir pour méditer avant de dormir.",
   notifications: [
     { message: "Votre rêve a été analysé", read: false },
     { message: "Nouvelle suggestion disponible", read: false },
