@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 import apiClient from "@/services/apiClient";
 import type { User } from "@/Interfaces";
 import { computed, ref } from "vue";
+import { logoutUser } from "@/services/authService";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<User | null>(null);
@@ -27,9 +28,9 @@ export const useUserStore = defineStore("user", () => {
   const clearUser = () => {
     user.value = null;
   };
-  const logout = () => {
+  const logout = async () => {
     user.value = null;
-    localStorage.removeItem("token");
+    await logoutUser();
   };
   const isAuthenticated = computed(() => !!user.value);
 

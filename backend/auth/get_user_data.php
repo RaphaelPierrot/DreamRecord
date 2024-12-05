@@ -9,12 +9,7 @@ require '../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
-
-$secret_key = $_ENV['SECRET_KEY'];
 $headers = getallheaders();
 
 if (!isset($headers['Authorization'])) {

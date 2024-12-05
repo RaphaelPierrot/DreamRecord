@@ -9,12 +9,8 @@ require '../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
 
-$secret_key = $_ENV['SECRET_KEY'];
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
@@ -37,24 +33,40 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($user && password_verify($password, $user['password'])) {
     // Générer le token JWT
-    $payload = [
-        'iss' => 'https://api.dreamrecord.net', // émetteur du token
-        'aud' => 'https://dreamrecord.net',      // audience du token
-        'iat' => time(),                         // temps d'émission
-        'exp' => time() + (60 * 60),             // expiration (1 heure)
+    $access_token_payload = [
+    'iss' => 'https://api.dreamrecord.net',
+    'aud' => 'https://dreamrecord.net',
+    'iat' => time(),
+    'exp' => time() + (60 * 15), // 15 minutes
+    'data' => [
+        'userId' => $user['id'],
+        'email' => $email
+    ]
+    ];
+
+    $refresh_token_payload = [
+        'iat' => time(),
+        'exp' => time() + (60 * 60 * 24 * 30), // 30 jours
         'data' => [
             'userId' => $user['id'],
-            'email' => $email
         ]
     ];
 
-    $jwt = JWT::encode($payload, $secret_key, 'HS256');
+    $access_token = JWT::encode($access_token_payload, $secret_key, 'HS256');
+    $refresh_token = JWT::encode($refresh_token_payload, $secret_key, 'HS256');
+
+    // Stocker le refresh_token dans la base de données
+    $stmt = $pdo->prepare('INSERT INTO refresh_tokens (user_id, token) VALUES (?, ?)');
+    $stmt->execute([$user['id'], $refresh_token]);
+
 
     echo json_encode([
-        'status' => 'success',
-        'message' => 'Connexion réussie.',
-        'token' => $jwt
+    'status' => 'success',
+    'message' => 'Connexion réussie.',
+    'access_token' => $access_token,
+    'refresh_token' => $refresh_token
     ]);
+
 } else {
     echo json_encode([
         'status' => 'error',

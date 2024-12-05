@@ -15,49 +15,37 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { ref } from "vue";
 import DashboardCard from "./DashboardCard.vue";
 import type { Feature } from "@/Interfaces";
 
-export default defineComponent({
-  name: "Dashboard",
-  components: {
-    DashboardCard,
+const features = ref<Feature[]>([
+  {
+    title: "Mon Journal de Rêves",
+    description: "Consignez et relisez vos rêves.",
+    icon: "book",
+    link: "/dream-diaries",
   },
-  setup() {
-    const features = ref<Feature[]>([
-      {
-        title: "Mon Journal de Rêves",
-        description: "Consignez et relisez vos rêves.",
-        icon: "book",
-        link: "/dream-diaries",
-      },
-      {
-        title: "Analyse de Rêves",
-        description: "Analysez vos rêves pour en extraire des significations.",
-        icon: "brain",
-        link: "/analysis",
-      },
-      {
-        title: "Suggestions",
-        description: "Recevez des conseils personnalisés.",
-        icon: "lightbulb",
-        link: "/suggestions",
-      },
-      {
-        title: "Statistiques",
-        description: "Visualisez vos tendances oniriques.",
-        icon: "chart-bar",
-        link: "/statistics",
-      },
-    ]);
-
-    return {
-      features,
-    };
+  {
+    title: "Analyse de Rêves",
+    description: "Analysez vos rêves pour en extraire des significations.",
+    icon: "brain",
+    link: "/analysis",
   },
-});
+  {
+    title: "Suggestions",
+    description: "Recevez des conseils personnalisés.",
+    icon: "lightbulb",
+    link: "/suggestions",
+  },
+  {
+    title: "Statistiques",
+    description: "Visualisez vos tendances oniriques.",
+    icon: "chart-bar",
+    link: "/statistics",
+  },
+]);
 </script>
 
 <style scoped lang="scss">

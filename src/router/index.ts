@@ -7,6 +7,9 @@ import HomePage from "@/components/UserPage/HomePage.vue";
 import DreamDiaries from "@/components/UserPage/DreamDiaries/DreamDiaries.vue";
 import Dashboard from "@/components/UserPage/Dashboard/Dashboard.vue";
 import { useUserStore } from "@/store";
+import Analysis from "@/components/UserPage/Analysis/analysis.vue";
+import Statistics from "@/components/UserPage/Statistics/statistics.vue";
+import Suggestions from "@/components/UserPage/Suggestions/suggestions.vue";
 const routes = [
   {
     path: "/",
@@ -32,6 +35,21 @@ const routes = [
         path: "/dream-diaries",
         name: "dream-diaries",
         component: DreamDiaries,
+      },
+      {
+        path: "/analysis",
+        name: "analysis",
+        component: Analysis,
+      },
+      {
+        path: "/suggestions",
+        name: "suggestions",
+        component: Suggestions,
+      },
+      {
+        path: "/statistics",
+        name: "statistics",
+        component: Statistics,
       },
     ],
   },

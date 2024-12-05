@@ -168,6 +168,7 @@ import { ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import apiClient from "@/services/apiClient";
 import { useUserStore } from "@/store";
+import { setAccessToken, setRefreshToken } from "@/services/authService";
 interface ShootingStar {
   top: number;
   left: number;
@@ -268,7 +269,8 @@ const handleLogin = async () => {
       // Mettre à jour le store utilisateur
       const userStore = useUserStore();
       await userStore.fetchUser();
-
+      await setAccessToken(response.data.access_token);
+      await setRefreshToken(response.data.refresh_token);
       // Rediriger vers la page d'accueil
       router.push({ name: "home" });
     } else {
