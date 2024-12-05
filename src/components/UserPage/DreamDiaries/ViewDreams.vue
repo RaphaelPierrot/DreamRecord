@@ -14,68 +14,52 @@
   <p v-else>Aucun rêve enregistré. Ajoutez votre premier rêve!</p>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import type { User, Dream } from "@/Interfaces";
+<script lang="ts" setup>
+import type { User } from "@/Interfaces";
 import { mockUser } from "@/data/user";
 
-export default defineComponent({
-  name: "ViewDreams",
-  setup() {
-    const user: User = mockUser;
+const user: User = mockUser;
 
-    const editDream = (id: number) => {
-      const dream = user.dreams!.find((d) => d.id === id);
-      if (dream) {
-        const updatedTitle = prompt("Modifier le titre:", dream.title);
-        const updatedDescription = prompt(
-          "Modifier la description:",
-          dream.description
-        );
-        const updatedDate = prompt(
-          "Modifier la date (YYYY-MM-DD):",
-          dream.date
-        );
-        if (updatedTitle && updatedDescription && updatedDate) {
-          const wordCount = updatedDescription.trim().split(/\s+/).length;
-          if (wordCount < 10 || wordCount > 30) {
-            alert("La description doit contenir entre 10 et 30 mots.");
-            return;
-          }
-
-          dream.title = updatedTitle;
-          dream.description = updatedDescription;
-          dream.date = updatedDate;
-        }
+const editDream = (id: number) => {
+  const dream = user.dreams!.find((d) => d.id === id);
+  if (dream) {
+    const updatedTitle = prompt("Modifier le titre:", dream.title);
+    const updatedDescription = prompt(
+      "Modifier la description:",
+      dream.description
+    );
+    const updatedDate = prompt("Modifier la date (YYYY-MM-DD):", dream.date);
+    if (updatedTitle && updatedDescription && updatedDate) {
+      const wordCount = updatedDescription.trim().split(/\s+/).length;
+      if (wordCount < 10 || wordCount > 30) {
+        alert("La description doit contenir entre 10 et 30 mots.");
+        return;
       }
-    };
 
-    const deleteDream = (id: number) => {
-      if (confirm("Voulez-vous vraiment supprimer ce rêve?")) {
-        const index = user.dreams!.findIndex((d) => d.id === id);
-        if (index !== -1) {
-          user.dreams?.splice(index, 1);
-        }
-      }
-    };
+      dream.title = updatedTitle;
+      dream.description = updatedDescription;
+      dream.date = updatedDate;
+    }
+  }
+};
 
-    const formatDate = (date: string): string => {
-      const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return new Date(date).toLocaleDateString(undefined, options);
-    };
+const deleteDream = (id: number) => {
+  if (confirm("Voulez-vous vraiment supprimer ce rêve?")) {
+    const index = user.dreams!.findIndex((d) => d.id === id);
+    if (index !== -1) {
+      user.dreams?.splice(index, 1);
+    }
+  }
+};
 
-    return {
-      user,
-      editDream,
-      deleteDream,
-      formatDate,
-    };
-  },
-});
+const formatDate = (date: string): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return new Date(date).toLocaleDateString(undefined, options);
+};
 </script>
 
 <style scoped lang="scss">

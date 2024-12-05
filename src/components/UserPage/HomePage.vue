@@ -18,7 +18,7 @@
 
     <!-- Contenu principal -->
     <main :class="{ mainWsidebar: uiStore.isSidebarVisible }">
-      <router-view />
+      <router-view></router-view>
     </main>
   </div>
 </template>
