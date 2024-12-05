@@ -247,7 +247,7 @@ export default defineComponent({
   }
 
   .home-page main {
-    margin-left: 80px; /* Réduit la marge pour les petits écrans */
+    margin-left: 0px; /* Réduit la marge pour les petits écrans */
   }
 
   header {

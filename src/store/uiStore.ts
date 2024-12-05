@@ -11,10 +11,14 @@ export const useUIStore = defineStore("ui", () => {
   const showSidebar = () => {
     isSidebarVisible.value = true;
   };
+  function toggleSidebar() {
+    isSidebarVisible.value = !isSidebarVisible.value;
+  }
 
   return {
     isSidebarVisible,
     hideSidebar,
     showSidebar,
+    toggleSidebar,
   };
 });
